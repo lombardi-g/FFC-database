@@ -1,4 +1,5 @@
 from excel_export import pass_to_excel
+from input_window import Interface
 import requests
 import re
 from datetime import datetime
@@ -11,7 +12,7 @@ def caps_lock_ignore(text):
     return re.compile(text,re.I)                    
 
 def scrape_match_summary():
-    url = 'https://egol.fcf.com.br/SISGOL/WDER0700_Sumula.asp?SelStart1=2023&SelStop1=2023&SelStart2=557&SelStop2=557&SelStart3=70&SelStop3=70&Index=1&RunReport=Run+Report'
+    url = Interface.assert_URL()
     response = requests.get(url)
     targetURL = BeautifulSoup(response.text, 'html.parser')
 
@@ -105,4 +106,6 @@ def scrape_match_summary():
         figueira_first=False
 
     if __name__ == "__main__":
+        Interface.welcome()
+        scrape_match_summary()
         pass_to_excel()
