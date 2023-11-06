@@ -1,10 +1,12 @@
-from scraping import date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first
+# from interface import date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first
+# from scraping import scrape_match_summary
 from openpyxl import load_workbook
                       
-def pass_to_excel():
+def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first):
+    # scrape_match_summary()
     workbook = load_workbook("Banco de Dados Figueirense Base.xlsx")
     sheet = workbook['Jogos']
-    # Assigned labels from sheet. Read them and dynamically make the dict?
+    # Hard-coded labels from sheet. Read them and dynamically make the dict?
     column_labels = {
         "CÓDIGO JOGO":1,
         "DATA JOGO":2,
@@ -56,8 +58,8 @@ def pass_to_excel():
         last_row -= 1
         
     last_row_value = sheet.cell(row=last_row, column=column_labels['CÓDIGO JOGO']).value
-    print(last_row)
-    print(last_row_value)
+    # print(last_row) #test
+    # print(last_row_value) #test
     new_row = last_row + 1
     sheet.cell(row=new_row, column=column_labels['CÓDIGO JOGO'],value=last_row_value+1)
     sheet.cell(row=new_row, column=column_labels['DATA JOGO'],value=date)
@@ -81,3 +83,5 @@ def pass_to_excel():
     sheet.cell(row=new_row, column=column_labels['1º A MARCAR ADVERSÁRIO'],value=1 if figueira_first else 0)
 
     workbook.save("Banco de Dados Figueirense Base.xlsx")
+
+# pass_to_excel()

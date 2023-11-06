@@ -1,9 +1,8 @@
 from excel_export import pass_to_excel
-from input_window import Interface
+# from interface import assertedURL
 import requests
 import re
 from datetime import datetime
-# import os
 # import tkinter as tk
 # from tkinter import messagebox
 from bs4 import BeautifulSoup
@@ -11,15 +10,15 @@ from bs4 import BeautifulSoup
 def caps_lock_ignore(text):
     return re.compile(text,re.I)                    
 
-def scrape_match_summary():
-    url = Interface.assert_URL()
+def scrape_match_summary(URL_from_interface):
+    url = URL_from_interface
     response = requests.get(url)
     targetURL = BeautifulSoup(response.text, 'html.parser')
 
     # Determine opponent
     match = targetURL.find(string=caps_lock_ignore('figueirense'))
     teams = match.split(' x ')
-    opponent = [team for team in teams if team.upper() != 'FIGUEIRENSE'][0]
+    opponent = [team for team in teams if team.upper() != 'FIGUEIRENSE'][0].capitalize()
 
     # Final score
     final_score = match.find_next('p').find_next()
@@ -105,7 +104,6 @@ def scrape_match_summary():
     else:
         figueira_first=False
 
-    if __name__ == "__main__":
-        Interface.welcome()
-        scrape_match_summary()
-        pass_to_excel()
+    pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first)
+
+
