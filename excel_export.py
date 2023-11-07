@@ -80,7 +80,7 @@ def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_s
     sheet.cell(row=new_row, column=column_labels['DERROTA'],value=1 if figueira_final_score < opponent_final_score else 0)
     sheet.cell(row=new_row, column=column_labels['MINUTOS JOGADOS'],value = int(first_half_minutes) + int(second_half_minutes))
     sheet.cell(row=new_row, column=column_labels['1º A MARCAR FIGUEIRENSE'],value=1 if figueira_first else 0)
-    sheet.cell(row=new_row, column=column_labels['1º A MARCAR ADVERSÁRIO'],value=1 if figueira_first else 0)
+    sheet.cell(row=new_row, column=column_labels['1º A MARCAR ADVERSÁRIO'],value=0 if figueira_first else 1)
 
     workbook.save("Banco de Dados Figueirense Base.xlsx")
 
