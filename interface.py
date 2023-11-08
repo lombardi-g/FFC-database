@@ -1,4 +1,4 @@
-from scraping import scrape_match_summary
+from scraping import scrape_match_summary, excel_file
 
 def assertURL():
     print("Colar link da súmula, confirmar com Enter: ")
@@ -11,6 +11,7 @@ def assertURL():
 
 
 if __name__ == "__main__":
+    print(f'Leitor de súmulas da FCF.\nPara funcionamento correto:\n1 - A base de dados deve estar com o nome: {excel_file}\n2 - O arquivo {excel_file} e este programa devem estar na mesma pasta\n')
     validURL = assertURL()
     scrape_match_summary(validURL)
     print("\nConcluído.")

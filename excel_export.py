@@ -1,10 +1,12 @@
 # from interface import date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first
-# from scraping import scrape_match_summary
+
 from openpyxl import load_workbook
-                      
+
+excel_file = "Banco de Dados Figueirense Base.xlsx"
+
 def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first):
     # scrape_match_summary()
-    workbook = load_workbook("Banco de Dados Figueirense Base.xlsx")
+    workbook = load_workbook(excel_file)
     sheet = workbook['Jogos']
     # Hard-coded labels from sheet. Read them and dynamically make the dict?
     column_labels = {
