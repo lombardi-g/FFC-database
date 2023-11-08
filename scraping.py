@@ -96,15 +96,6 @@ def scrape_match_summary(URL_from_interface):
             own_goal = "CONTRA" in own_goal_locator.get_text().upper()
             goal_team_locator = goal_half_locator.find_next(name="td").find_next(name="td").find_next(name="td").find_next(name="td")
             goal_team = goal_team_locator.get_text().capitalize()
-
-            if total_goals==0:
-                if goal_team == "Figueirense" and own_goal is False:
-                    figueira_first = True
-                elif goal_team != "Figueirense" and own_goal:
-                    figueira_first = True
-                else:
-                    figueira_first = False
-
             goal_info = {
                 "minute":goal_minute,
                 "half":goal_half,
@@ -115,65 +106,75 @@ def scrape_match_summary(URL_from_interface):
             total_goals+=1
             goal_reader = goal_team_locator
             goal_minute_locator = goal_reader.find_next(name="td")
+        first_goal = goals_info[0]
+        for goalinfo in goals_info:
+            if goalinfo["half"] == "1T" and first_goal["half"] == "2T":
+                first_goal = goalinfo
+        for goalinfo in goals_info:
+            if goalinfo["minute"] < first_goal["minute"] and goalinfo["half"] == first_goal["half"]:
+                first_goal = goalinfo
+        figueira_first = True if first_goal["team"] == "Figueirense" and first_goal["OG"] == False else False 
     else:
         figueira_first= "Empate"
 
-    scored_1st_1 = scored_1st_2 = scored_1st_3 = scored_2nd_1 = scored_2nd_2 = scored_2nd_3 = \
-    conceded_1st_1 = conceded_1st_2 = conceded_1st_3 = conceded_2nd_1 = conceded_2nd_2 = conceded_2nd_3 = int(0)
+    scored_list=[0,0,0,0,0,0]
+    conceded_list=[0,0,0,0,0,0]
+
 
     for goals in goals_info:
         match (goals["half"],goals["team"],goals["OG"]):
             # Separating goals scored per third, or own goals from opponent
             case ("1T","Figueirense",False) if goals['minute'] < float(first_half_minutes)/3:
-                scored_1st_1 += 1
+                scored_list[0] += 1
             case ("1T","Figueirense",False) if goals['minute'] <= float(first_half_minutes)*2/3 and goals["minute"] > float(first_half_minutes)/3:
-                scored_1st_2 += 1
+                scored_list[1] += 1
             case ("1T","Figueirense",False) if goals['minute'] >= float(first_half_minutes)*2/3:
-                scored_1st_3 += 1
+                scored_list[2] += 1
             case ("2T","Figueirense",False) if goals['minute'] < float(second_half_minutes)/3:
-                scored_2nd_1 += 1
+                scored_list[3] += 1
             case ("2T","Figueirense",False) if goals['minute'] <= float(second_half_minutes)*2/3 and goals["minute"] > float(second_half_minutes)/3:
-                scored_2nd_2 += 1
+                scored_list[4] += 1
             case ("2T","Figueirense",False) if goals['minute'] >= float(second_half_minutes)*2/3:
-                scored_2nd_3 += 1
+                scored_list[5] += 1
             case ("1T",_,True) if goals['minute'] < float(first_half_minutes)/3:
-                scored_1st_1 += 1
+                scored_list[0] += 1
             case ("1T",_,True) if goals['minute'] <= float(first_half_minutes)*2/3 and goals["minute"] > float(first_half_minutes)/3:
-                scored_1st_2 += 1
+                scored_list[1] += 1
             case ("1T",_,True) if goals['minute'] >= float(first_half_minutes)*2/3:
-                scored_1st_3 += 1
+                scored_list[2] += 1
             case ("2T",_,True) if goals['minute'] < float(second_half_minutes)/3:
-                scored_2nd_1 += 1
+                scored_list[3] += 1
             case ("2T",_,True) if goals['minute'] <= float(second_half_minutes)*2/3 and goals["minute"] > float(second_half_minutes)/3:
-                scored_2nd_2 += 1
+                scored_list[4] += 1
             case ("2T",_,True) if goals['minute'] >= float(second_half_minutes)*2/3:
-                scored_2nd_3 += 1
+                scored_list[5] += 1
+
             # Separating goals conceded per third, or our own goals
             case ("1T",_,False) if goals['minute'] < float(first_half_minutes)/3:
-                conceded_1st_1 += 1
+                conceded_list[0] += 1
             case ("1T",_,False) if goals['minute'] <= float(first_half_minutes)*2/3 and goals["minute"] > float(first_half_minutes)/3:
-                conceded_1st_2 += 1
+                conceded_list[1] += 1
             case ("1T",_,False) if goals['minute'] >= float(first_half_minutes)*2/3:
-                conceded_1st_3 += 1
+                conceded_list[2] += 1
             case ("2T",_,False) if goals['minute'] < float(second_half_minutes)/3:
-                conceded_2nd_1 += 1
+                conceded_list[3] += 1
             case ("2T",_,False) if goals['minute'] <= float(second_half_minutes)*2/3 and goals["minute"] > float(second_half_minutes)/3:
-                conceded_2nd_2 += 1
+                conceded_list[4] += 1
             case ("2T",_,False) if goals['minute'] >= float(second_half_minutes)*2/3:
-                conceded_2nd_3 += 1
+                conceded_list[5] += 1
             case ("1T","Figueirense",True) if goals['minute'] < float(first_half_minutes)/3:
-                conceded_1st_1 += 1
+                conceded_list[0] += 1
             case ("1T","Figueirense",True) if goals['minute'] <= float(first_half_minutes)*2/3 and goals["minute"] > float(first_half_minutes)/3:
-                conceded_1st_2 += 1
+                conceded_list[1] += 1
             case ("1T","Figueirense",True) if goals['minute'] >= float(first_half_minutes)*2/3:
-                conceded_1st_3 += 1
+                conceded_list[2] += 1
             case ("2T","Figueirense",True) if goals['minute'] < float(second_half_minutes)/3:
-                conceded_2nd_1 += 1
+                conceded_list[3] += 1
             case ("2T","Figueirense",True) if goals['minute'] <= float(second_half_minutes)*2/3 and goals["minute"] > float(second_half_minutes)/3:
-                conceded_2nd_2 += 1
+                conceded_list[4] += 1
             case ("2T","Figueirense",True) if goals['minute'] >= float(second_half_minutes)*2/3:
-                conceded_2nd_3 += 1
+                conceded_list[5] += 1
             
-    pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first,scored_1st_1, scored_1st_2, scored_1st_3, scored_2nd_1, scored_2nd_2, scored_2nd_3, conceded_1st_1, conceded_1st_2, conceded_1st_3, conceded_2nd_1, conceded_2nd_2, conceded_2nd_3)
+    pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first,scored_list,conceded_list)
 
 
