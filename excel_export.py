@@ -4,8 +4,8 @@ from openpyxl import load_workbook
 
 excel_file = "Banco de Dados Figueirense Base.xlsx"
 
-def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first):
-    # scrape_match_summary()
+def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first,scored_1st_1, scored_1st_2, scored_1st_3, scored_2nd_1, scored_2nd_2, scored_2nd_3, conceded_1st_1, conceded_1st_2, conceded_1st_3, conceded_2nd_1, conceded_2nd_2, conceded_2nd_3):
+
     workbook = load_workbook(excel_file)
     sheet = workbook['Jogos']
     # Hard-coded labels from sheet. Read them and dynamically make the dict?
@@ -83,7 +83,18 @@ def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_s
     sheet.cell(row=new_row, column=column_labels['MINUTOS JOGADOS'],value = int(first_half_minutes) + int(second_half_minutes))
     sheet.cell(row=new_row, column=column_labels['1º A MARCAR FIGUEIRENSE'],value=1 if figueira_first == True else 0)
     sheet.cell(row=new_row, column=column_labels['1º A MARCAR ADVERSÁRIO'],value=1 if figueira_first == False else 0)
+    sheet.cell(row=new_row, column=column_labels['GOLS MARCADOS 1ºT - 0\'-15\''],value= scored_1st_1)
+    sheet.cell(row=new_row, column=column_labels['GOLS MARCADOS 1ºT - 15\'-30\''],value= scored_1st_2)
+    sheet.cell(row=new_row, column=column_labels['GOLS MARCADOS 1ºT - 30\'-45\''],value= scored_1st_3)
+    sheet.cell(row=new_row, column=column_labels['GOLS MARCADOS 2ºT - 0\'-15\''],value= scored_2nd_1)
+    sheet.cell(row=new_row, column=column_labels['GOLS MARCADOS 2ºT - 15\'-30\''],value= scored_2nd_2)
+    sheet.cell(row=new_row, column=column_labels['GOLS MARCADOS 2ºT - 30\'-45\''],value= scored_2nd_3)
+    sheet.cell(row=new_row, column=column_labels['GOLS SOFRIDOS 1ºT - 0\'-15\''],value= conceded_1st_1)
+    sheet.cell(row=new_row, column=column_labels['GOLS SOFRIDOS 1ºT - 15\'-30\''],value= conceded_1st_2)
+    sheet.cell(row=new_row, column=column_labels['GOLS SOFRIDOS 1ºT - 30\'-45\''],value= conceded_1st_3)
+    sheet.cell(row=new_row, column=column_labels['GOLS SOFRIDOS 2ºT - 0\'-15\''],value= conceded_2nd_1)
+    sheet.cell(row=new_row, column=column_labels['GOLS SOFRIDOS 2ºT - 15\'-30\''],value= conceded_2nd_2)
+    sheet.cell(row=new_row, column=column_labels['GOLS SOFRIDOS 2ºT - 30\'-45\''],value= conceded_2nd_3)
 
     workbook.save("Banco de Dados Figueirense Base.xlsx")
 
-# pass_to_excel()
