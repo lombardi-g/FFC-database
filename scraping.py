@@ -104,8 +104,9 @@ def scrape_match_summary(URL_from_interface):
             total_goals+=1
             goal_reader = goal_team_locator
             goal_minute_locator = goal_reader.find_next(name="td")
+            print(goal_info)
     else:
-        figueira_first=False
+        figueira_first= "Empate"
 
     pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first)
 
