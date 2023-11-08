@@ -36,7 +36,12 @@ def scrape_match_summary(URL_from_interface):
     # Find category
     full_tournament = targetURL.find(string=caps_lock_ignore('sub-'))
     category = "Sub"+full_tournament[full_tournament.upper().find("SUB-")+4:full_tournament.upper().find("SUB-")+6]
-    tournament = "Campeonato Catarinense"
+    if full_tournament.get_text().startswith("CAMPEONATO CATARINENSE"):
+        tournament = "Campeonato Catarinense"
+    elif full_tournament.get_text().startswith("COPA SC"):
+        tournament = "Copa SC"
+    else:
+        tournament = None
 
     # Which round
     round_number = full_tournament.find_next(string='Rodada:').find_next()
