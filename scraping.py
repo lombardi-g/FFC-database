@@ -88,26 +88,36 @@ def scrape_match_summary(URL_from_interface):
     if figueira_final_score or opponent_final_score != 0:
         while goal_minute_locator is not score_locator_end:
             goal_minute_locator = goal_reader.find_next(name="td")
-            goal_minute = goal_minute_locator.get_text()
+            goal_minute = goal_minute_locator.get_text().replace("'","")
+            goal_minute = int(goal_minute)
             goal_half_locator = goal_minute_locator.find_next(name="td")
             goal_half = goal_half_locator.get_text()
+            own_goal_locator = goal_half_locator.find_next(name="td").find_next(name="td")
+            own_goal = "CONTRA" in own_goal_locator.get_text().upper()
             goal_team_locator = goal_half_locator.find_next(name="td").find_next(name="td").find_next(name="td").find_next(name="td")
             goal_team = goal_team_locator.get_text().capitalize()
+
             if total_goals==0:
-                figueira_first = True if goal_team == "Figueirense" else False
+                if goal_team == "Figueirense" and own_goal is False:
+                    figueira_first = True
+                elif goal_team != "Figueirense" and own_goal:
+                    figueira_first = True
+                else:
+                    figueira_first = False
+
             goal_info = {
                 "minute":goal_minute,
                 "half":goal_half,
+                "OG":own_goal,
                 "team":goal_team
             }
             goals_info.append(goal_info)
             total_goals+=1
             goal_reader = goal_team_locator
             goal_minute_locator = goal_reader.find_next(name="td")
-            print(goal_info)
     else:
         figueira_first= "Empate"
 
-    pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first)
+    # pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first)
 
 
