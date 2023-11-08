@@ -55,25 +55,23 @@ def scrape_match_summary(URL_from_interface):
     place = place[0]
 
     # Find minutes played
-    def minute_calculator(start: str, end: str, added: str):
+    def minute_calculator(start: str, end: str) -> datetime:
         format = '%H:%M'
         match_start = datetime.strptime(start,format)
         match_end = datetime.strptime(end,format)
-        added_time = datetime.strptime(added,format)
-        return match_end - match_start + added_time
+        deltacorrector = datetime.strptime("00:00",format) #correction for the return not to be a timedelta class
+        return match_end - match_start + deltacorrector
         
     first_half_locator = targetURL.find(name="td",string="Início 1° Tempo:").find_next()
     first_half_started = first_half_locator.get_text()
     first_half_finished = targetURL.find(name="td",string="Término do 1º Tempo:").find_next()
-    first_half_added_time = first_half_finished.find_next(name="td",string="Acréscimo:").find_next().get_text()
     first_half_finished = first_half_finished.get_text()
-    first_half_minutes = datetime.strftime(minute_calculator(first_half_started, first_half_finished, first_half_added_time),'%M')
+    first_half_minutes = datetime.strftime(minute_calculator(first_half_started, first_half_finished),'%M')
     second_half_locator = targetURL.find(name="td",string="Início 2° Tempo:").find_next()
     second_half_started = second_half_locator.get_text()
     second_half_finished = targetURL.find(name="td", string="Término do 2º Tempo:").find_next()
-    second_half_added_time = second_half_finished.find_next(name="td",string="Acréscimo:").find_next().find_next().get_text()
     second_half_finished = second_half_finished.get_text()
-    second_half_minutes = datetime.strftime(minute_calculator(second_half_started,second_half_finished, second_half_added_time),'%M')
+    second_half_minutes = datetime.strftime(minute_calculator(second_half_started,second_half_finished),'%M')
 
     #Scoring information
     score_locator_beginning = targetURL.find(string=caps_lock_ignore("5.0 - GOLS"))
