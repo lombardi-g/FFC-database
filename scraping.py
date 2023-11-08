@@ -18,7 +18,7 @@ def scrape_match_summary(URL_from_interface):
     # Determine opponent
     match = targetURL.find(string=caps_lock_ignore('figueirense'))
     teams = match.split(' x ')
-    opponent = [team for team in teams if team.upper() != 'FIGUEIRENSE'][0].capitalize()
+    opponent = [team for team in teams if team.upper() != 'FIGUEIRENSE'][0].title()
 
     # Final score
     final_score = match.find_next('p').find_next()
