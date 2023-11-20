@@ -1,7 +1,7 @@
 
 <p align="center">
   <a href = "https://figueirense.com.br/">
-  <img alt="FFC" height="180" src="https://github.com/lombardi-g/Shots-database/blob/main/Figueirense.png?raw=true">
+  <img alt="FFC" height="180" src="Figueirense.png">
   </a>
 </p>
 
