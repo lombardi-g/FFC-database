@@ -13,13 +13,42 @@ initial_lineup_locator = initial_lineup_locator.find_next(name="td")
 
 # Read substitutions and make adding and subtractions
 substitutions_locator = targetURL.find(name="td", string="12.0 - SUBSTITUIÇÕES")
-substitutions_locator = substitutions_locator.find_next(name="td",string="Saiu").find_next(name="td")
+substitutions_locator = substitutions_locator.find_next(name="td",string="Saiu")
 substitutions_end = substitutions_locator.find_next(name="td",string="**1T = 1° Tempo | 2T = 2° Tempo | INT = Intervalo")
 while substitutions_locator is not substitutions_end:
+    substitutions_locator = substitutions_locator.find_next(name="td")
+    minute_entered = substitutions_locator.get_text()
+
+    substitutions_locator = substitutions_locator.find_next(name="td")
+    which_half = substitutions_locator.get_text().split(" ")[0]
+
+    substitutions_locator = substitutions_locator.find_next(name="td")
+    team = substitutions_locator.get_text().split(" ")[0]
+
+    substitutions_locator = substitutions_locator.find_next(name="td")
+    entering_player_jersey = substitutions_locator.get_text().split(" - ")[0]
+    entering_player_name = substitutions_locator.get_text().split(" - ")[1]
+
+    substitutions_locator = substitutions_locator.find_next(name="td")
+    leaving_player_jersey = substitutions_locator.get_text().split(" - ")[0]
+    leaving_player_name = substitutions_locator.get_text().split(" - ")[1]
+
+    substitutions_locator = substitutions_locator.find_next(name="td", string="8 - EZEQUIEL RIBEIRO DE SOUSA")
     substitutions_locator = substitutions_locator.find_next(name="td")
 
 # Store all in variables
 
 # Pass information to excel
 
-print()
+'''
+#  Debugging with prints
+print(substitutions_locator)
+print(minute_entered)
+print(type(minute_entered))
+print(which_half,"a")
+print(team)
+print(entering_player_jersey)
+print(entering_player_name)
+print(leaving_player_jersey)
+print(leaving_player_name)
+'''
