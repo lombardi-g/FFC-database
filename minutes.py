@@ -32,33 +32,33 @@ while not initial_lineup_locator.get_text().startswith("Capitão:"):
 
 initial_lineup = [name.rstrip() for name in initial_lineup]
 
-# substitutions_locator = targetURL.find(name="td", string="12.0 - SUBSTITUIÇÕES")
-# substitutions_locator = substitutions_locator.find_next(name="td",string="Saiu")
-# substitutions_end = substitutions_locator.find_next(name="td",string="**1T = 1° Tempo | 2T = 2° Tempo | INT = Intervalo")
-# subs = {}
-# while substitutions_locator is not substitutions_end:
-#     substitutions_locator = substitutions_locator.find_next(name="td")
-#     minute_entered = substitutions_locator.get_text()
+substitutions_locator = targetURL.find(name="td", string="12.0 - SUBSTITUIÇÕES")
+substitutions_locator = substitutions_locator.find_next(name="td",string="Saiu")
+substitutions_end = substitutions_locator.find_next(name="td",string="**1T = 1° Tempo | 2T = 2° Tempo | INT = Intervalo")
+subs = {}
+while substitutions_locator is not substitutions_end:
+    substitutions_locator = substitutions_locator.find_next(name="td")
+    minute_entered = substitutions_locator.get_text()
 
-#     substitutions_locator = substitutions_locator.find_next(name="td")
-#     which_half = substitutions_locator.get_text().split(" ")[0]
+    substitutions_locator = substitutions_locator.find_next(name="td")
+    which_half = substitutions_locator.get_text().split(" ")[0]
 
-#     substitutions_locator = substitutions_locator.find_next(name="td")
-#     team = substitutions_locator.get_text().split(" ")[0]
+    substitutions_locator = substitutions_locator.find_next(name="td")
+    team = substitutions_locator.get_text().split(" ")[0]
 
-#     substitutions_locator = substitutions_locator.find_next(name="td")
-#     entering_player_jersey = substitutions_locator.get_text().split(" - ")[0]
-#     entering_player_name = substitutions_locator.get_text().split(" - ")[1]
+    substitutions_locator = substitutions_locator.find_next(name="td")
+    entering_player_jersey = substitutions_locator.get_text().split(" - ")[0]
+    entering_player_name = substitutions_locator.get_text().split(" - ")[1]
 
-#     substitutions_locator = substitutions_locator.find_next(name="td")
-#     leaving_player_jersey = substitutions_locator.get_text().split(" - ")[0]
-#     leaving_player_name = substitutions_locator.get_text().split(" - ")[1]
+    substitutions_locator = substitutions_locator.find_next(name="td")
+    leaving_player_jersey = substitutions_locator.get_text().split(" - ")[0]
+    leaving_player_name = substitutions_locator.get_text().split(" - ")[1]
 
 
 
 # Pass information to excel
 
-# '''
-#  Debugging with prints
+'''
+ Debugging with prints
 print(initial_lineup)
-# '''
+'''
