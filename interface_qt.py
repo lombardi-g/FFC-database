@@ -16,7 +16,7 @@ class SummaryScraper(QtWidgets.QWidget):
                 
         self.setWindowTitle('Leitor de súmulas da FCF')
         self.setWindowIcon(QtGui.QIcon("Figueirense.png"))
-        self.instructions = QtWidgets.QLabel(f'Para funcionamento correto:\n- A base de dados deve estar com o nome: {excel_file}\n- Este programa e o arquivo \"{excel_file}\" devem estar na mesma pasta\n\nColar link da súmula:')
+        self.instructions = QtWidgets.QLabel(f'Para funcionamento correto:\n- O arquivo {excel_file} precisa estar fechado\n- A base de dados deve estar com o nome: {excel_file}\n- Este programa e o arquivo \"{excel_file}\" devem estar na mesma pasta\n\nColar link da súmula:')
         self.url_input_box = QtWidgets.QLineEdit(self)
         self.confirm_button = QtWidgets.QPushButton(text="Confirmar")
         self.response = QtWidgets.QLabel('')
