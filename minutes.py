@@ -1,4 +1,3 @@
-# from excel_export import pass_to_excel
 import requests
 from bs4 import BeautifulSoup
 
@@ -6,7 +5,9 @@ url = 'https://egol.fcf.com.br/SISGOL/WDER0700_Sumula.asp?SelStart1=2023&SelStop
 response = requests.get(url)
 targetURL = BeautifulSoup(response.text, 'html.parser')
 
+# Hard coding for tests. Use scraping.py cariables
 home = 'Fora'
+match = 98
 
 initial_lineup_locator = targetURL.find(name="td",string="3.0 - RELAÇÃO DE JOGADORES")#.find_next(string="FIGUEIRENSE")
 initial_lineup_locator = initial_lineup_locator.find_next(name="td",string="BID").find_next(name="td",string="BID").find_next(name="td")
@@ -60,11 +61,17 @@ while substitutions_locator is not substitutions_end:
 
     substitutions_locator = substitutions_locator.find_next(name="td")
 
+for players in subs:
+    match players["half"]:
+        case 1:
+            ...
+        case 2:
+            ...
 # Final list, total match time of initial lineup subtracting subs minutes
 
-# Pass information to excel
+# Return list to use pass_to_excel function
 
 # Debugging with prints
-# print(initial_lineup)
-# print(len(subs))
-# print(subs)
+print(initial_lineup)
+print(len(subs))
+print(subs)
