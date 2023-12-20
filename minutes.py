@@ -1,13 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
 
+# Hard coding for tests. Use scraping.py variables
 url = 'https://egol.fcf.com.br/SISGOL/WDER0700_Sumula.asp?SelStart1=2023&SelStop1=2023&SelStart2=505&SelStop2=505&SelStart3=85&SelStop3=85&Index=1&RunReport=Run+Report'
 response = requests.get(url)
 targetURL = BeautifulSoup(response.text, 'html.parser')
 
-# Hard coding for tests. Use scraping.py cariables
 home = 'Fora'
-match = 98
+first_half_minutes = 47
+second_half_minutes = 61
+match = first_half_minutes+second_half_minutes
 
 initial_lineup_locator = targetURL.find(name="td",string="3.0 - RELAÇÃO DE JOGADORES")#.find_next(string="FIGUEIRENSE")
 initial_lineup_locator = initial_lineup_locator.find_next(name="td",string="BID").find_next(name="td",string="BID").find_next(name="td")
@@ -39,6 +41,7 @@ substitutions_end = substitutions_locator.find_next(name="td",string="**1T = 1°
 subs = []
 while substitutions_locator is not substitutions_end:
     minute_entered = substitutions_locator.get_text()
+    minute_entered = int(minute_entered.split("'")[0]) if minute_entered != "-" else None
 
     substitutions_locator = substitutions_locator.find_next(name="td")
     which_half = substitutions_locator.get_text().split(" ")[0]
@@ -64,10 +67,9 @@ while substitutions_locator is not substitutions_end:
 for players in subs:
     match players["half"]:
         case 1:
-            ...
+            players["minutes"] = int(first_half_minutes) - players["minutes"] + int(second_half_minutes)            
         case 2:
-            ...
-# Final list, total match time of initial lineup subtracting subs minutes
+            players["minutes"] = int(second_half_minutes) - players["minutes"]
 
 # Return list to use pass_to_excel function
 
