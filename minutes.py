@@ -66,9 +66,9 @@ while substitutions_locator is not substitutions_end:
 
 for players in subs:
     match players["half"]:
-        case 1:
+        case "1":
             players["minutes"] = int(first_half_minutes) - players["minutes"] + int(second_half_minutes)            
-        case 2:
+        case "2":
             players["minutes"] = int(second_half_minutes) - players["minutes"]
 
 # Return list to use pass_to_excel function

@@ -120,7 +120,6 @@ def scrape_match_summary(URL_from_interface):
     scored_list=[0,0,0,0,0,0]
     conceded_list=[0,0,0,0,0,0]
 
-
     for goals in goals_info:
         match (goals["half"],goals["team"],goals["OG"]):
             # Separating goals scored per third, or own goals from opponent
@@ -176,5 +175,4 @@ def scrape_match_summary(URL_from_interface):
                 conceded_list[5] += 1
             
     pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first,scored_list,conceded_list)
-
 
