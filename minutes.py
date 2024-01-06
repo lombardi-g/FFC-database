@@ -73,35 +73,37 @@ for players in subs:
             players["minutes"] = int(second_half_minutes) - players["minutes"]
 
 # Final list. Subtract minutes of starters that left.
+for starter in initial_lineup:
+    ...
 
-    excel_file = "MinutagemBase2023.xlsx"
-    workbook = load_workbook(excel_file)
-    sheet = workbook['Base23']
-    # Hard-coded labels from sheet. Read them and dynamically make the dict?
-    column_labels = {
-        "Data":1,
-        "Adversário":2,
-        "Nome":3,
-        "Minutos":4,        
-    }
+excel_file = "MinutagemBase2023.xlsx"
+workbook = load_workbook(excel_file)
+sheet = workbook['Base23']
+# Hard-coded labels from sheet. Read them and dynamically make the dict?
+column_labels = {
+    "Data":1,
+    "Adversário":2,
+    "Nome":3,
+    "Minutos":4,        
+}
 
-    last_row = sheet.max_row
-    last_row_value = 2
-    while last_row > 1:
-        last_row_value = sheet.cell(row=last_row,column=1).value
-        if last_row_value is not None:
-            break
-        last_row -= 1
-        
-    last_row_value = sheet.cell(row=last_row, column=column_labels['Data']).value
+last_row = sheet.max_row
+last_row_value = 2
+while last_row > 1:
+    last_row_value = sheet.cell(row=last_row,column=1).value
+    if last_row_value is not None:
+        break
+    last_row -= 1
     
-    new_row = last_row + 1
-    sheet.cell(row=new_row, column=column_labels['Data'],value = ...)
-    sheet.cell(row=new_row, column=column_labels['Adversário'],value = ...)
-    sheet.cell(row=new_row, column=column_labels['Nome'],value = ...)
-    sheet.cell(row=new_row, column=column_labels['Minutos'],value = ...)
+last_row_value = sheet.cell(row=last_row, column=column_labels['Data']).value
 
-    workbook.save("Banco de Dados Figueirense Base.xlsx")
+new_row = last_row + 1
+sheet.cell(row=new_row, column=column_labels['Data'],value = ...)
+sheet.cell(row=new_row, column=column_labels['Adversário'],value = ...)
+sheet.cell(row=new_row, column=column_labels['Nome'],value = ...)
+sheet.cell(row=new_row, column=column_labels['Minutos'],value = ...)
+
+workbook.save("Banco de Dados Figueirense Base.xlsx")
 
 
 # Debugging with prints
