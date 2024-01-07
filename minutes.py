@@ -73,18 +73,36 @@ for players in subs:
             players["minutes"] = int(second_half_minutes) - players["minutes"]
 
 # Final list. Subtract minutes of starters that left.
+summary_list = []
 for starter in initial_lineup:
-    ...
+    name:str = starter
+    minutes_played:int = first_half_minutes + second_half_minutes
+    
+    for substitute in subs:
+        if starter == substitute["replacing"]:
+            summary_list.append(
+                {
+                "name":name,
+                "minutes_played": minutes_played - substitute["minutes"]
+                })
+            name = substitute["name"]
+            minutes_played = substitute["minutes"]
+        
+    summary_list.append(
+        {
+        "name":name,
+        "minutes_played":minutes_played
+        })
 
 excel_file = "MinutagemBase2023.xlsx"
 workbook = load_workbook(excel_file)
 sheet = workbook['Base23']
-# Hard-coded labels from sheet. Read them and dynamically make the dict?
+
 column_labels = {
     "Data":1,
     "Adversário":2,
     "Nome":3,
-    "Minutos":4,        
+    "Minutos":4        
 }
 
 last_row = sheet.max_row
@@ -107,6 +125,4 @@ workbook.save("Banco de Dados Figueirense Base.xlsx")
 
 
 # Debugging with prints
-print(initial_lineup)
-print(len(subs))
-print(subs)
+print(summary_list)
