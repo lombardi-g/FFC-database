@@ -3,13 +3,13 @@ from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 
 # Hard coding for tests. Use scraping.py variables
-url = 'https://egol.fcf.com.br/SISGOL/WDER0700_Sumula.asp?SelStart1=2023&SelStop1=2023&SelStart2=505&SelStop2=505&SelStart3=85&SelStop3=85&Index=1&RunReport=Run+Report'
+url = 'https://egol.fcf.com.br/SISGOL/WDER0700_Sumula.asp?SelStart1=2023&SelStop1=2023&SelStart2=557&SelStop2=557&SelStart3=57&SelStop3=57&Index=1&RunReport=Run+Report'
 response = requests.get(url)
 targetURL = BeautifulSoup(response.text, 'html.parser')
 
-home = 'Fora'
-first_half_minutes = 47
-second_half_minutes = 51
+home = 'Casa'
+first_half_minutes = 40 + 1
+second_half_minutes = 40 + 4
 match = first_half_minutes+second_half_minutes
 
 initial_lineup_locator = targetURL.find(name="td",string="3.0 - RELAÇÃO DE JOGADORES")#.find_next(string="FIGUEIRENSE")
@@ -93,6 +93,7 @@ for starter in initial_lineup:
         "name":name,
         "minutes_played":minutes_played
         })
+# TODO: If player was a substitute, entered and was substituted before the match ended, summary_list doesnt fetch.
 
 excel_file = "MinutagemBase2023.xlsx"
 workbook = load_workbook(excel_file)
@@ -125,4 +126,6 @@ workbook.save("Banco de Dados Figueirense Base.xlsx")
 
 
 # Debugging with prints
+for each in summary_list:
+    print(each)
 print(summary_list)
