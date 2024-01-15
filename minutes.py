@@ -99,9 +99,9 @@ for starter in initial_lineup:
             if player_entered["name"] == player_left["replacing"]:
                 match player_entered["half"]:
                     case "1":
-                        minutes_played_benched = ...
+                        minutes_played_benched = first_half_minutes - player_entered["minutes"] + second_half_minutes
                     case "2":
-                        minutes_played_benched = ...
+                        minutes_played_benched = second_half_minutes - player_entered["minutes"]
                 summary_list.append(
                     {
                     "name": player_entered["name"],
