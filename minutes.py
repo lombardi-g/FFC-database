@@ -93,20 +93,20 @@ for starter in initial_lineup:
         "name":name,
         "minutes_played":minutes_played
         })
-# TODO: If player was at the bench, entered and was substituted before the match ended, summary_list doesnt fetch.
-    for player_entered in subs:
-        for player_left in subs:
-            if player_entered["name"] == player_left["replacing"]:
-                match player_entered["half"]:
-                    case "1":
-                        minutes_played_benched = first_half_minutes - player_entered["minutes"] + second_half_minutes
-                    case "2":
-                        minutes_played_benched = second_half_minutes - player_entered["minutes"]
-                summary_list.append(
-                    {
-                    "name": player_entered["name"],
-                    "minutes_played": minutes_played_benched
-                    })
+# If player was at the bench, entered and was substituted before the match ended, summary_list doesnt fetch.
+for player_entered in subs:
+    for player_left in subs:
+        if player_entered["name"] == player_left["replacing"]:
+            match player_entered["half"]:
+                case "1":
+                    minutes_played_benched = first_half_minutes - player_entered["minutes"] + second_half_minutes
+                case "2":
+                    minutes_played_benched = second_half_minutes - player_entered["minutes"]
+            summary_list.append(
+                {
+                "name": player_left["name"],
+                "minutes_played": minutes_played_benched
+                })
 
 excel_file = "MinutagemBase2023.xlsx"
 workbook = load_workbook(excel_file)
