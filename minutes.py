@@ -129,13 +129,14 @@ while last_row > 1:
     
 last_row_value = sheet.cell(row=last_row, column=column_labels['Data']).value
 
-new_row = last_row + 1
-sheet.cell(row=new_row, column=column_labels['Data'],value = ...)
-sheet.cell(row=new_row, column=column_labels['Adversário'],value = ...)
-sheet.cell(row=new_row, column=column_labels['Nome'],value = ...)
-sheet.cell(row=new_row, column=column_labels['Minutos'],value = ...)
+for player in summary_list:
+    new_row = last_row + 1
+    sheet.cell(row=new_row, column=column_labels['Data'],value = ...)
+    sheet.cell(row=new_row, column=column_labels['Adversário'],value = ...)
+    sheet.cell(row=new_row, column=column_labels['Nome'],value = ...)
+    sheet.cell(row=new_row, column=column_labels['Minutos'],value = ...)
 
-workbook.save("Banco de Dados Figueirense Base.xlsx")
+workbook.save("MinutagemBase2023.xlsx")
 
 
 # Debugging with prints
