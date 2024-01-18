@@ -1,16 +1,46 @@
 import requests
 from bs4 import BeautifulSoup
 from openpyxl import load_workbook
+from datetime import datetime
+import re
 
 # Hard coding for tests. Use scraping.py variables
 url = 'https://egol.fcf.com.br/SISGOL/WDER0700_Sumula.asp?SelStart1=2023&SelStop1=2023&SelStart2=557&SelStop2=557&SelStart3=57&SelStop3=57&Index=1&RunReport=Run+Report'
 response = requests.get(url)
 targetURL = BeautifulSoup(response.text, 'html.parser')
 
-home = 'Casa'
-first_half_minutes = 40 + 1
-second_half_minutes = 40 + 4
-match = first_half_minutes+second_half_minutes
+def caps_lock_ignore(text):
+    return re.compile(text,re.I)   
+
+match = targetURL.find(string=caps_lock_ignore('figueirense'))
+print(match)
+teams = match.split(' x ')
+opponent = [team for team in teams if team.upper() != 'FIGUEIRENSE'][0].title()
+if teams[0] == "FIGUEIRENSE":
+    home = "Casa"
+else:
+    home = "Fora"
+
+def minute_calculator(start: str, end: str) -> datetime:
+        format = '%H:%M'
+        match_start = datetime.strptime(start,format)
+        match_end = datetime.strptime(end,format)
+        deltacorrector = datetime.strptime("00:00",format) #correction for the return not to be a timedelta class
+        return match_end - match_start + deltacorrector
+
+first_half_locator = targetURL.find(name="td",string="Início 1° Tempo:").find_next()
+first_half_started = first_half_locator.get_text()
+first_half_finished = targetURL.find(name="td",string="Término do 1º Tempo:").find_next()
+first_half_finished = first_half_finished.get_text()
+first_half_minutes = datetime.strftime(minute_calculator(first_half_started, first_half_finished),'%M')
+second_half_locator = targetURL.find(name="td",string="Início 2° Tempo:").find_next()
+second_half_started = second_half_locator.get_text()
+second_half_finished = targetURL.find(name="td", string="Término do 2º Tempo:").find_next()
+second_half_finished = second_half_finished.get_text()
+second_half_minutes = datetime.strftime(minute_calculator(second_half_started,second_half_finished),'%M')
+
+date_locator = targetURL.find(string="Data:")
+date = date_locator.find_next(string=caps_lock_ignore('/202'))
 
 initial_lineup_locator = targetURL.find(name="td",string="3.0 - RELAÇÃO DE JOGADORES")#.find_next(string="FIGUEIRENSE")
 initial_lineup_locator = initial_lineup_locator.find_next(name="td",string="BID").find_next(name="td",string="BID").find_next(name="td")
@@ -76,14 +106,14 @@ for players in subs:
 summary_list = []
 for starter in initial_lineup:
     name:str = starter
-    minutes_played:int = first_half_minutes + second_half_minutes
+    minutes_played:int = int(first_half_minutes) + int(second_half_minutes)
     
     for substitute in subs:
         if starter == substitute["replacing"]:
             summary_list.append(
                 {
                 "name":name,
-                "minutes_played": minutes_played - substitute["minutes"]
+                "minutes_played": int(minutes_played) - substitute["minutes"]
                 })
             name = substitute["name"]
             minutes_played = substitute["minutes"]
@@ -99,9 +129,9 @@ for player_entered in subs:
         if player_entered["name"] == player_left["replacing"]:
             match player_entered["half"]:
                 case "1":
-                    minutes_played_benched = first_half_minutes - player_entered["minutes"] + second_half_minutes
+                    minutes_played_benched = int(first_half_minutes) - player_entered["minutes"] + int(second_half_minutes)
                 case "2":
-                    minutes_played_benched = second_half_minutes - player_entered["minutes"]
+                    minutes_played_benched = int(second_half_minutes) - player_entered["minutes"]
             summary_list.append(
                 {
                 "name": player_left["name"],
@@ -140,6 +170,8 @@ workbook.save("MinutagemBase2023.xlsx")
 
 
 # Debugging with prints
-for each in summary_list:
-    print(each)
-print(summary_list)
+# for each in summary_list:
+#     print(each)
+# print(len(summary_list))
+# print(date)
+# print(opponent)
