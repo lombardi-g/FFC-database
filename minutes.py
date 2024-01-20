@@ -161,10 +161,10 @@ last_row_value = sheet.cell(row=last_row, column=column_labels['Data']).value
 
 for player in summary_list:
     new_row = last_row + 1
-    sheet.cell(row=new_row, column=column_labels['Data'],value = ...)
-    sheet.cell(row=new_row, column=column_labels['Adversário'],value = ...)
-    sheet.cell(row=new_row, column=column_labels['Nome'],value = ...)
-    sheet.cell(row=new_row, column=column_labels['Minutos'],value = ...)
+    sheet.cell(row=new_row, column=column_labels['Data'],value = date)
+    sheet.cell(row=new_row, column=column_labels['Adversário'],value = opponent)
+    sheet.cell(row=new_row, column=column_labels['Nome'],value = player["name"])
+    sheet.cell(row=new_row, column=column_labels['Minutos'],value = player["minutes"])
 
 workbook.save("MinutagemBase2023.xlsx")
 
