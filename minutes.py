@@ -13,7 +13,6 @@ def caps_lock_ignore(text):
     return re.compile(text,re.I)   
 
 match = targetURL.find(string=caps_lock_ignore('figueirense'))
-print(match)
 teams = match.split(' x ')
 opponent = [team for team in teams if team.upper() != 'FIGUEIRENSE'][0].title()
 if teams[0] == "FIGUEIRENSE":
@@ -164,7 +163,7 @@ for player in summary_list:
     sheet.cell(row=new_row, column=column_labels['Data'],value = date)
     sheet.cell(row=new_row, column=column_labels['Adversário'],value = opponent)
     sheet.cell(row=new_row, column=column_labels['Nome'],value = player["name"])
-    sheet.cell(row=new_row, column=column_labels['Minutos'],value = player["minutes"])
+    sheet.cell(row=new_row, column=column_labels['Minutos'],value = player["minutes_played"])
 
 workbook.save("MinutagemBase2023.xlsx")
 
