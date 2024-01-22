@@ -155,15 +155,14 @@ while last_row > 1:
     if last_row_value is not None:
         break
     last_row -= 1
-    
-last_row_value = sheet.cell(row=last_row, column=column_labels['Data']).value
+new_row = last_row + 1
 
 for player in summary_list:
-    new_row = last_row + 1
     sheet.cell(row=new_row, column=column_labels['Data'],value = date)
     sheet.cell(row=new_row, column=column_labels['Adversário'],value = opponent)
     sheet.cell(row=new_row, column=column_labels['Nome'],value = player["name"])
     sheet.cell(row=new_row, column=column_labels['Minutos'],value = player["minutes_played"])
+    new_row += 1
 
 workbook.save("MinutagemBase2023.xlsx")
 
