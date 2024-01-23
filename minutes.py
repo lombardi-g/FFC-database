@@ -5,7 +5,7 @@ from datetime import datetime
 import re
 
 # Hard coding for tests. Use scraping.py variables
-url = 'https://egol.fcf.com.br/SISGOL/WDER0700_Sumula.asp?SelStart1=2023&SelStop1=2023&SelStart2=557&SelStop2=557&SelStart3=57&SelStop3=57&Index=1&RunReport=Run+Report'
+url = 'https://egol.fcf.com.br/SISGOL/WDER0700_Sumula.asp?SelStart1=2023&SelStop1=2023&SelStart2=577&SelStop2=577&SelStart3=46&SelStop3=46&Index=1&RunReport=Run+Report'
 response = requests.get(url)
 targetURL = BeautifulSoup(response.text, 'html.parser')
 
@@ -71,7 +71,7 @@ substitutions_end = substitutions_locator.find_next(name="td",string="**1T = 1°
 subs = []
 while substitutions_locator is not substitutions_end:
     minute_entered = substitutions_locator.get_text()
-    minute_entered = int(minute_entered.split("'")[0]) if minute_entered != "-" else None
+    minute_entered = int(minute_entered.split("'")[0]) if minute_entered != "-" else int(0)
 
     substitutions_locator = substitutions_locator.find_next(name="td")
     which_half = substitutions_locator.get_text().split(" ")[0]
@@ -100,6 +100,8 @@ for players in subs:
             players["minutes"] = int(first_half_minutes) - players["minutes"] + int(second_half_minutes)            
         case "2":
             players["minutes"] = int(second_half_minutes) - players["minutes"]
+        case "INTERVALO":
+            players["minutes"] = int(second_half_minutes)
 
 # Final list. Subtract minutes of starters that left.
 summary_list = []
@@ -165,7 +167,6 @@ for player in summary_list:
     new_row += 1
 
 workbook.save("MinutagemBase2023.xlsx")
-
 
 # Debugging with prints
 # for each in summary_list:
