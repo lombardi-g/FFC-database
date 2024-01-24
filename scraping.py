@@ -1,14 +1,9 @@
 from excel_export import pass_to_excel, excel_file
-# from interface import assertedURL
+from minutes import scrape_minutes
 import requests
-import re
 from datetime import datetime
-# import tkinter as tk
-# from tkinter import messagebox
-from bs4 import BeautifulSoup
-
-def caps_lock_ignore(text):
-    return re.compile(text,re.I)                    
+from common_functions import minute_calculator, caps_lock_ignore
+from bs4 import BeautifulSoup              
 
 def scrape_match_summary(URL_from_interface):
     url = URL_from_interface
@@ -59,14 +54,7 @@ def scrape_match_summary(URL_from_interface):
     city = place[1]
     place = place[0]
 
-    # Find minutes played
-    def minute_calculator(start: str, end: str) -> datetime:
-        format = '%H:%M'
-        match_start = datetime.strptime(start,format)
-        match_end = datetime.strptime(end,format)
-        deltacorrector = datetime.strptime("00:00",format) #correction for the return not to be a timedelta class
-        return match_end - match_start + deltacorrector
-        
+    # Find minutes played        
     first_half_locator = targetURL.find(name="td",string="Início 1° Tempo:").find_next()
     first_half_started = first_half_locator.get_text()
     first_half_finished = targetURL.find(name="td",string="Término do 1º Tempo:").find_next()
@@ -174,5 +162,5 @@ def scrape_match_summary(URL_from_interface):
             case ("2T","Figueirense",True) if goals['minute'] >= float(second_half_minutes)*2/3:
                 conceded_list[5] += 1
             
-    pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first,scored_list,conceded_list)
-
+    minutes_played_list = scrape_minutes(targetURL, home, first_half_minutes, second_half_minutes)
+    pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first,scored_list,conceded_list,minutes_played_list)

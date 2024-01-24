@@ -1,176 +1,119 @@
-import requests
 from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 from datetime import datetime
-import re
+from common_functions import caps_lock_ignore, minute_calculator
 
-# Hard coding for tests. Use scraping.py variables
-url = 'https://egol.fcf.com.br/SISGOL/WDER0700_Sumula.asp?SelStart1=2023&SelStop1=2023&SelStart2=577&SelStop2=577&SelStart3=46&SelStop3=46&Index=1&RunReport=Run+Report'
-response = requests.get(url)
-targetURL = BeautifulSoup(response.text, 'html.parser')
+def scrape_minutes(imported_target_url, imported_home,imported_first_half_minutes, imported_second_half_minutes):
+    targetURL = imported_target_url
 
-def caps_lock_ignore(text):
-    return re.compile(text,re.I)   
+    home = imported_home
+    first_half_minutes = imported_first_half_minutes
+    second_half_minutes = imported_second_half_minutes
 
-match = targetURL.find(string=caps_lock_ignore('figueirense'))
-teams = match.split(' x ')
-opponent = [team for team in teams if team.upper() != 'FIGUEIRENSE'][0].title()
-if teams[0] == "FIGUEIRENSE":
-    home = "Casa"
-else:
-    home = "Fora"
+    initial_lineup_locator = targetURL.find(name="td",string="3.0 - RELAÇÃO DE JOGADORES")#.find_next(string="FIGUEIRENSE")
+    initial_lineup_locator = initial_lineup_locator.find_next(name="td",string="BID").find_next(name="td",string="BID").find_next(name="td")
+    initial_lineup_end = initial_lineup_locator.find_next("p").get_text()
+    initial_lineup = []
+    while not initial_lineup_locator.get_text().startswith("Capitão:"):
+        initial_lineup_locator = initial_lineup_locator.find_next(name="td")
+        left_player_name = initial_lineup_locator.get_text()
 
-def minute_calculator(start: str, end: str) -> datetime:
-        format = '%H:%M'
-        match_start = datetime.strptime(start,format)
-        match_end = datetime.strptime(end,format)
-        deltacorrector = datetime.strptime("00:00",format) #correction for the return not to be a timedelta class
-        return match_end - match_start + deltacorrector
+        initial_lineup_locator = initial_lineup_locator.find_next(name="td")
+        left_is_starter = initial_lineup_locator.get_text()
 
-first_half_locator = targetURL.find(name="td",string="Início 1° Tempo:").find_next()
-first_half_started = first_half_locator.get_text()
-first_half_finished = targetURL.find(name="td",string="Término do 1º Tempo:").find_next()
-first_half_finished = first_half_finished.get_text()
-first_half_minutes = datetime.strftime(minute_calculator(first_half_started, first_half_finished),'%M')
-second_half_locator = targetURL.find(name="td",string="Início 2° Tempo:").find_next()
-second_half_started = second_half_locator.get_text()
-second_half_finished = targetURL.find(name="td", string="Término do 2º Tempo:").find_next()
-second_half_finished = second_half_finished.get_text()
-second_half_minutes = datetime.strftime(minute_calculator(second_half_started,second_half_finished),'%M')
+        initial_lineup_locator = initial_lineup_locator.find_next(name="td").find_next(name="td").find_next(name="td")
+        right_player_name = initial_lineup_locator.get_text()
 
-date_locator = targetURL.find(string="Data:")
-date = date_locator.find_next(string=caps_lock_ignore('/202'))
+        initial_lineup_locator = initial_lineup_locator.find_next(name="td")
+        right_is_starter = initial_lineup_locator.get_text()
 
-initial_lineup_locator = targetURL.find(name="td",string="3.0 - RELAÇÃO DE JOGADORES")#.find_next(string="FIGUEIRENSE")
-initial_lineup_locator = initial_lineup_locator.find_next(name="td",string="BID").find_next(name="td",string="BID").find_next(name="td")
-initial_lineup_end = initial_lineup_locator.find_next("p").get_text()
-initial_lineup = []
-while not initial_lineup_locator.get_text().startswith("Capitão:"):
-    initial_lineup_locator = initial_lineup_locator.find_next(name="td")
-    left_player_name = initial_lineup_locator.get_text()
+        initial_lineup.append(left_player_name) if home =="Casa" and "T" in left_is_starter else None
+        initial_lineup.append(right_player_name) if home =="Fora" and "T" in right_is_starter else None
 
-    initial_lineup_locator = initial_lineup_locator.find_next(name="td")
-    left_is_starter = initial_lineup_locator.get_text()
+        initial_lineup_locator = initial_lineup_locator.find_next(name="td").find_next(name="td")
 
-    initial_lineup_locator = initial_lineup_locator.find_next(name="td").find_next(name="td").find_next(name="td")
-    right_player_name = initial_lineup_locator.get_text()
+    initial_lineup = [name.rstrip() for name in initial_lineup]
 
-    initial_lineup_locator = initial_lineup_locator.find_next(name="td")
-    right_is_starter = initial_lineup_locator.get_text()
+    substitutions_locator = targetURL.find(name="td", string="12.0 - SUBSTITUIÇÕES")
+    substitutions_locator = substitutions_locator.find_next(name="td",string="Saiu").find_next(name="td")
+    substitutions_end = substitutions_locator.find_next(name="td",string="**1T = 1° Tempo | 2T = 2° Tempo | INT = Intervalo")
+    subs = []
+    while substitutions_locator is not substitutions_end:
+        minute_entered = substitutions_locator.get_text()
+        minute_entered = int(minute_entered.split("'")[0]) if minute_entered != "-" else int(0)
 
-    initial_lineup.append(left_player_name) if home =="Casa" and "T" in left_is_starter else None
-    initial_lineup.append(right_player_name) if home =="Fora" and "T" in right_is_starter else None
+        substitutions_locator = substitutions_locator.find_next(name="td")
+        which_half = substitutions_locator.get_text().split(" ")[0]
 
-    initial_lineup_locator = initial_lineup_locator.find_next(name="td").find_next(name="td")
+        substitutions_locator = substitutions_locator.find_next(name="td")
+        team = substitutions_locator.get_text().split(" ")[0]
 
-initial_lineup = [name.rstrip() for name in initial_lineup]
+        substitutions_locator = substitutions_locator.find_next(name="td")
+        entering_player_jersey = substitutions_locator.get_text().split(" - ")[0]
+        entering_player_name = substitutions_locator.get_text().split(" - ")[1]
 
-substitutions_locator = targetURL.find(name="td", string="12.0 - SUBSTITUIÇÕES")
-substitutions_locator = substitutions_locator.find_next(name="td",string="Saiu").find_next(name="td")
-substitutions_end = substitutions_locator.find_next(name="td",string="**1T = 1° Tempo | 2T = 2° Tempo | INT = Intervalo")
-subs = []
-while substitutions_locator is not substitutions_end:
-    minute_entered = substitutions_locator.get_text()
-    minute_entered = int(minute_entered.split("'")[0]) if minute_entered != "-" else int(0)
+        substitutions_locator = substitutions_locator.find_next(name="td")
+        leaving_player_jersey = substitutions_locator.get_text().split(" - ")[0]
+        leaving_player_name = substitutions_locator.get_text().split(" - ")[1]
 
-    substitutions_locator = substitutions_locator.find_next(name="td")
-    which_half = substitutions_locator.get_text().split(" ")[0]
+        subs.append({"half":which_half,
+                    "minutes":minute_entered,
+                    "name":entering_player_name,
+                    "replacing":leaving_player_name}) if team == "FIGUEIRENSE" else None
 
-    substitutions_locator = substitutions_locator.find_next(name="td")
-    team = substitutions_locator.get_text().split(" ")[0]
+        substitutions_locator = substitutions_locator.find_next(name="td")
 
-    substitutions_locator = substitutions_locator.find_next(name="td")
-    entering_player_jersey = substitutions_locator.get_text().split(" - ")[0]
-    entering_player_name = substitutions_locator.get_text().split(" - ")[1]
+    # Evaluating when the substitution happened
+    for players in subs:
+        match players["half"]:
+            case "1":
+                players["minutes"] = int(first_half_minutes) - players["minutes"] + int(second_half_minutes)            
+            case "2":
+                players["minutes"] = int(second_half_minutes) - players["minutes"]
+            case "INTERVALO":
+                players["minutes"] = int(second_half_minutes)
 
-    substitutions_locator = substitutions_locator.find_next(name="td")
-    leaving_player_jersey = substitutions_locator.get_text().split(" - ")[0]
-    leaving_player_name = substitutions_locator.get_text().split(" - ")[1]
-
-    subs.append({"half":which_half,
-                 "minutes":minute_entered,
-                 "name":entering_player_name,
-                 "replacing":leaving_player_name}) if team == "FIGUEIRENSE" else None
-
-    substitutions_locator = substitutions_locator.find_next(name="td")
-
-for players in subs:
-    match players["half"]:
-        case "1":
-            players["minutes"] = int(first_half_minutes) - players["minutes"] + int(second_half_minutes)            
-        case "2":
-            players["minutes"] = int(second_half_minutes) - players["minutes"]
-        case "INTERVALO":
-            players["minutes"] = int(second_half_minutes)
-
-# Final list. Subtract minutes of starters that left.
-summary_list = []
-for starter in initial_lineup:
-    name:str = starter
-    minutes_played:int = int(first_half_minutes) + int(second_half_minutes)
-    
-    for substitute in subs:
-        if starter == substitute["replacing"]:
-            summary_list.append(
-                {
-                "name":name,
-                "minutes_played": int(minutes_played) - substitute["minutes"]
-                })
-            name = substitute["name"]
-            minutes_played = substitute["minutes"]
+    # Final list. Subtract minutes of starters that left.
+    summary_list = []
+    for starter in initial_lineup:
+        name:str = starter
+        minutes_played:int = int(first_half_minutes) + int(second_half_minutes)
         
-    summary_list.append(
-        {
-        "name":name,
-        "minutes_played":minutes_played
-        })
-# If player was at the bench, entered and was substituted before the match ended, summary_list doesnt fetch.
-for player_entered in subs:
-    for player_left in subs:
-        if player_entered["name"] == player_left["replacing"]:
-            match player_entered["half"]:
-                case "1":
-                    minutes_played_benched = int(first_half_minutes) - player_entered["minutes"] + int(second_half_minutes)
-                case "2":
-                    minutes_played_benched = int(second_half_minutes) - player_entered["minutes"]
-            summary_list.append(
-                {
-                "name": player_left["name"],
-                "minutes_played": minutes_played_benched
-                })
+        for substitute in subs:
+            if starter == substitute["replacing"]:
+                summary_list.append(
+                    {
+                    "name":name,
+                    "minutes_played": int(minutes_played) - substitute["minutes"]
+                    })
+                name = substitute["name"]
+                minutes_played = substitute["minutes"]
+            
+        summary_list.append(
+            {
+            "name":name,
+            "minutes_played":minutes_played
+            })
+    # If player was at the bench, entered and was substituted before the match ended, summary_list doesnt fetch.
+    for player_entered in subs:
+        for player_left in subs:
+            if player_entered["name"] == player_left["replacing"]:
+                match player_entered["half"]:
+                    case "1":
+                        minutes_played_benched = int(first_half_minutes) - player_entered["minutes"] + int(second_half_minutes)
+                    case "2":
+                        minutes_played_benched = int(second_half_minutes) - player_entered["minutes"]
+                summary_list.append(
+                    {
+                    "name": player_left["name"],
+                    "minutes_played": minutes_played_benched
+                    })
 
-excel_file = "MinutagemBase2023.xlsx"
-workbook = load_workbook(excel_file)
-sheet = workbook['Base23']
+    return summary_list
 
-column_labels = {
-    "Data":1,
-    "Adversário":2,
-    "Nome":3,
-    "Minutos":4        
-}
-
-last_row = sheet.max_row
-last_row_value = 2
-while last_row > 1:
-    last_row_value = sheet.cell(row=last_row,column=1).value
-    if last_row_value is not None:
-        break
-    last_row -= 1
-new_row = last_row + 1
-
-for player in summary_list:
-    sheet.cell(row=new_row, column=column_labels['Data'],value = date)
-    sheet.cell(row=new_row, column=column_labels['Adversário'],value = opponent)
-    sheet.cell(row=new_row, column=column_labels['Nome'],value = player["name"])
-    sheet.cell(row=new_row, column=column_labels['Minutos'],value = player["minutes_played"])
-    new_row += 1
-
-workbook.save("MinutagemBase2023.xlsx")
-
-# Debugging with prints
-# for each in summary_list:
-#     print(each)
-# print(len(summary_list))
-# print(date)
-# print(opponent)
+    # Debugging with prints
+    # for each in summary_list:
+    #     print(each)
+    # print(len(summary_list))
+    # print(date)
+    # print(opponent)

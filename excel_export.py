@@ -2,7 +2,7 @@ from openpyxl import load_workbook
 
 excel_file = "Banco de Dados Figueirense Base.xlsx"
 
-def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first,scored_list,conceded_list):
+def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_score,opponent,home,place,city,first_half_minutes,second_half_minutes,figueira_first,scored_list,conceded_list,minutes_list):
 
     workbook = load_workbook(excel_file)
     sheet = workbook['Jogos']
@@ -93,5 +93,29 @@ def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_s
     sheet.cell(row=new_row, column=column_labels['GOLS SOFRIDOS 2ºT - 15\'-30\''],value= conceded_list[4])
     sheet.cell(row=new_row, column=column_labels['GOLS SOFRIDOS 2ºT - 30\'-45\''],value= conceded_list[5])
 
-    workbook.save("Banco de Dados Figueirense Base.xlsx")
+    sheet = workbook['Scout']
 
+    column_labels = {
+        "Data":1,
+        "Adversário":4,
+        "Nome":7,
+        "Minutos":16        
+    }
+
+    last_row = sheet.max_row
+    last_row_value = 2
+    while last_row > 1:
+        last_row_value = sheet.cell(row=last_row,column=1).value
+        if last_row_value is not None:
+            break
+        last_row -= 1
+    new_row = last_row + 1
+
+    for player in minutes_list:
+        sheet.cell(row=new_row, column=column_labels['Data'],value = date)
+        sheet.cell(row=new_row, column=column_labels['Adversário'],value = opponent)
+        sheet.cell(row=new_row, column=column_labels['Nome'],value = player["name"])
+        sheet.cell(row=new_row, column=column_labels['Minutos'],value = player["minutes_played"])
+        new_row += 1
+
+    workbook.save("Banco de Dados Figueirense Base.xlsx")
