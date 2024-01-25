@@ -55,6 +55,11 @@ class SummaryScraper(QtWidgets.QWidget):
                        
         except ValueError:
             self.response.setText('Colar um link de súmula da FCF')
+        # except ...
+            # error for file already open
+                
+        # except ...
+            # error for a match not from figueirense
             
         except Exception:
             self.response.setText('Erro')
