@@ -97,9 +97,10 @@ def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_s
 
     column_labels = {
         "Data":1,
+        "Competição": 3,
         "Adversário":4,
-        "Nome":7,
-        "Minutos":16        
+        "Nome":8,
+        "Minutos":17        
     }
 
     last_row = sheet.max_row
@@ -113,6 +114,7 @@ def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_s
 
     for player in minutes_list:
         sheet.cell(row=new_row, column=column_labels['Data'],value = date)
+        sheet.cell(row=new_row, column=column_labels['Competição'],value = category)
         sheet.cell(row=new_row, column=column_labels['Adversário'],value = opponent)
         sheet.cell(row=new_row, column=column_labels['Nome'],value = player["name"])
         sheet.cell(row=new_row, column=column_labels['Minutos'],value = player["minutes_played"])
