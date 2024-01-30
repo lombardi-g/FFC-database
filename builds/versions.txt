@@ -2,3 +2,4 @@ All Windows builds
 
 v01 only summary information and match results
 v02 summary information and minutes played per athlete
+v03 summary information and minutes played per athlete with columns correction

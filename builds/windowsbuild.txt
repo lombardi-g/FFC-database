@@ -4,5 +4,5 @@ cd path
 Set-ExecutionPolicy Unrestricted
 python -m venv venv
 venv\Scripts\activate
-pip install requirements
+pip install -r requirements.txt
 pyinstaller --noconsole --name="SumulasFCF" --icon="Figueirense.ico" --add-data="Figueirense.ico:." --add-data="Figueirense.png:." --onefile interface_qt.py
