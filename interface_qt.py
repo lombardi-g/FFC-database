@@ -55,8 +55,9 @@ class SummaryScraper(QtWidgets.QWidget):
                        
         except ValueError:
             self.response.setText('Colar um link de súmula da FCF')
-        # except ...
-            # error for file already open
+            
+        except PermissionError:
+            self.response.setText(f'Feche o arquivo {excel_file}')
                 
         # except ...
             # error for a match not from figueirense
