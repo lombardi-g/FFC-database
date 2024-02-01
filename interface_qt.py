@@ -61,6 +61,7 @@ class SummaryScraper(QtWidgets.QWidget):
                 
         # except ...
             # error for a match not from figueirense
+            # self.response.setText('Não é partida do Figueirense')
             
         except Exception:
             self.response.setText('Erro')
