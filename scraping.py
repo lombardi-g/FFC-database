@@ -29,6 +29,7 @@ def scrape_match_summary(URL_from_interface):
 
 
     # Find category
+    # Supports only 2 tornaments from FCF
     full_tournament = targetURL.find(string=caps_lock_ignore('sub-'))
     category = "Sub"+full_tournament[full_tournament.upper().find("SUB-")+4:full_tournament.upper().find("SUB-")+6]
     if full_tournament.get_text().startswith("CAMPEONATO CATARINENSE"):
@@ -36,17 +37,17 @@ def scrape_match_summary(URL_from_interface):
     elif full_tournament.get_text().startswith("COPA SC"):
         tournament = "Copa SC"
     else:
-        tournament = None
+        tournament = ""
 
     # Which round
-    round_number = full_tournament.find_next(string='Rodada:').find_next()
-    round_number = round_number.get_text()
+    # round_number = full_tournament.find_next(string='Rodada:').find_next()
+    # round_number = round_number.get_text()
 
     # Find date
     date_locator = targetURL.find(string="Data:")
     date = date_locator.find_next(string=caps_lock_ignore('/202'))
     time_locator = date.find_next(string='Horário:')
-    time = time_locator.find_next().get_text()
+    # time = time_locator.find_next().get_text()
 
     # Find place
     place_locator = time_locator.find_next(string="Local:").find_next()

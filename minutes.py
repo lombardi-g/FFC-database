@@ -49,11 +49,11 @@ def scrape_minutes(imported_target_url, imported_home,imported_first_half_minute
         team = substitutions_locator.get_text().split(" ")[0]
 
         substitutions_locator = substitutions_locator.find_next(name="td")
-        entering_player_jersey = substitutions_locator.get_text().split(" - ")[0]
+        # entering_player_jersey = substitutions_locator.get_text().split(" - ")[0]
         entering_player_name = substitutions_locator.get_text().split(" - ")[1]
 
         substitutions_locator = substitutions_locator.find_next(name="td")
-        leaving_player_jersey = substitutions_locator.get_text().split(" - ")[0]
+        # leaving_player_jersey = substitutions_locator.get_text().split(" - ")[0]
         leaving_player_name = substitutions_locator.get_text().split(" - ")[1]
 
         subs.append({"half":which_half,
