@@ -31,7 +31,7 @@ def scrape_match_summary(URL_from_interface):
     # Find category
     # Supports only 2 tornaments from FCF
     full_tournament = targetURL.find(string=caps_lock_ignore('sub-'))
-    category = "Sub"+full_tournament[full_tournament.upper().find("SUB-")+4:full_tournament.upper().find("SUB-")+6]
+    category = f"Sub{full_tournament[full_tournament.upper().find('SUB-')+4:full_tournament.upper().find('SUB-')+6]}"
     if full_tournament.get_text().startswith("CAMPEONATO CATARINENSE"):
         tournament = "Campeonato Catarinense"
     elif full_tournament.get_text().startswith("COPA SC"):
@@ -102,7 +102,7 @@ def scrape_match_summary(URL_from_interface):
         for goalinfo in goals_info:
             if goalinfo["minute"] < first_goal["minute"] and goalinfo["half"] == first_goal["half"]:
                 first_goal = goalinfo
-        figueira_first = True if first_goal["team"] == "Figueirense" and first_goal["OG"] == False else False 
+        figueira_first = True if first_goal["team"] == "Figueirense" and not first_goal["OG"] else False 
     else:
         figueira_first= "Empate"
 
