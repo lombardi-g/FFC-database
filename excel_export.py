@@ -6,7 +6,7 @@ def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_s
 
     workbook = load_workbook(excel_file)
     sheet = workbook['Jogos']
-    # Hard-coded labels from sheet. Read them and dynamically make the dict?
+    # TODO:Hard-coded labels from sheet. Read them and dynamically make the dict?
     column_labels = {
         "CÓDIGO JOGO":1,
         "DATA JOGO":2,
@@ -93,6 +93,7 @@ def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_s
     sheet.cell(row=new_row, column=column_labels['GOLS SOFRIDOS 2ºT - 15\'-30\''],value= conceded_list[4])
     sheet.cell(row=new_row, column=column_labels['GOLS SOFRIDOS 2ºT - 30\'-45\''],value= conceded_list[5])
 
+    # Minute scraping
     sheet = workbook['Scout']
 
     column_labels = {
@@ -120,4 +121,4 @@ def pass_to_excel(date,category,tournament,figueira_final_score,opponent_final_s
         sheet.cell(row=new_row, column=column_labels['Minutos'],value = player["minutes_played"])
         new_row += 1
 
-    workbook.save("Banco de Dados Figueirense Base.xlsx")
+    workbook.save(excel_file)
